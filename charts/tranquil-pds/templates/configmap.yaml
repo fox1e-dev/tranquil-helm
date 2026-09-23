@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "tranquil.fullname" . }}-configmap
+data:
+  PDS_HOSTNAME: {{ .Values.hostname }} 
+  SERVER_PORT: "8080"
+  # Email
+  MAIL_FROM_ADDRESS: {{ .Values.pds.email.fomAddress }}
+  MAIL_FROM_NAME: {{ .Values.pds.email.fromName }}
+  {{- if .Values.pds.email.smarthost }}
+  MAIL_SMARTHOST_HOST: {{ .Values.pds.email.smarthost.host }}
+  MAIL_SMARTHOST_USERNAME: {{ .Values.pds.email.smarthost.username }}
+  {{- end }}
+  
+  config.toml: |
+    {{- with .Values.config }}
+    {{- toToml . | nindent 3 }}
+    {{- end }}
+

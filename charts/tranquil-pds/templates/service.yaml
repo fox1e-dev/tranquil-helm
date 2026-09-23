@@ -5,9 +5,9 @@ metadata:
   annotations:
     {{- toYaml .Values.service.annotations | nindent 4 }}
   {{- end }}
-  name: {{ template "tuwunel.fullname" . }}
+  name: {{ template "tranquil.fullname" . }}
   labels:
-    {{- include "tuwunel.labels" . | nindent 4 }}
+    {{- include "tranquil.labels" . | nindent 4 }}
 spec:
   clusterIP: {{ .Values.service.clusterIP | quote }}
   {{- if .Values.service.externalIPs }}
@@ -27,7 +27,7 @@ spec:
       port: {{ .Values.service.port }}
       targetPort: http
   selector:
-    {{- include "tuwunel.labels" . | nindent 4 }}
-    app.kubernetes.io/component: tuwunel
+    {{- include "tranquil.labels" . | nindent 4 }}
+    app.kubernetes.io/component: tranquil
   type: {{ .Values.service.type }}
 

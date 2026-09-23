@@ -1,0 +1,17 @@
+apiVersion: v2
+appVersion: v0.6.6
+description: Helm chart for Tranquil PDS - A Personal Data Server for the AT Protocol.
+home: https://tangled.org/fox1e.dev/tranquil-helm
+keywords:
+- tranquil
+- atproto
+- pds
+maintainers:
+- email: git+tranquil-chart@work.fox1e.dev
+  name: Fox1e
+  url: https://tangled.org/fox1e.dev
+name: tranquil-pds
+sources:
+- https://tangled.org/fox1e.dev/tranquil-helm
+type: application
+version: 0.0.1

@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ template "tuwunel.fullname" . }}-configmap
-data:
-  config.toml: |
-    {{- with .Values.config }}
-    {{- toToml . | nindent 3 }}
-    {{- end }}

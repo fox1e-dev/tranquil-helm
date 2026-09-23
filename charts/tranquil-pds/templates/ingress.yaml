@@ -1,11 +1,7 @@
 {{- if .Values.ingress.enabled -}}
-{{- $fullName := include "tuwunel.fullname" . -}}
+{{- $fullName := include "tranquil.fullname" . -}}
 {{- $servicePort := .Values.service.port -}}
 {{- $ingressPath := .Values.ingress.path -}}
-{{- $delegatedDomain := "" }}
-{{- $isDelegatedDomain := .Values.config.global.well_known.server }}
-{{- if $isDelegatedDomain }}
-{{- $delegatedDomain = mustRegexReplaceAll ":[0-9]+" .Values.config.global.well_known.server "" }}
 {{- end }}
 {{- $new := false }}
 {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1" -}}
@@ -18,7 +14,7 @@ kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    {{- include "tuwunel.labels" . | nindent 4 }}
+    {{- include "tranquil.labels" . | nindent 4 }}
   annotations:
     {{- if not $new }}
     kubernetes.io/ingress.class: {{ required "If ingress.enabled is set to true, ingress.class is required" .Values.ingress.class | quote }}
@@ -33,52 +29,14 @@ spec:
   {{- if .Values.ingress.tls }}
   tls:
     - hosts:
-        - {{ .Values.server_name }}
-        - {{ $delegatedDomain }}
+        - {{ .Values.ingress.host }}
       {{- range .Values.ingress.extraHosts }}
         - {{ . }}
       {{- end }}
       secretName: {{ .Values.ingress.tlsSecretName | default (printf "%s-tls" $fullName) }}
   {{- end }}
   rules:
-    {{- if $isDelegatedDomain }}
-    - host: {{ .Values.server_name }}
-      http:
-        paths:
-          - path: "/.well-known/matrix"
-            {{- if $new }}
-            pathType: Prefix
-            {{- end }}
-            backend:
-              {{- if $new }}
-              service:
-                name: {{ $fullName }}
-                port:
-                  number: {{ $servicePort }}
-              {{- else }}
-              serviceName: {{ $fullName }}
-              servicePort: {{ $servicePort }}
-              {{- end }}
-          - path: "/_matrix"
-            {{- if $new }}
-            pathType: Prefix
-            {{- end }}
-            backend:
-              {{- if $new }}
-              service:
-                name: {{ $fullName }}
-                port:
-                  number: {{ $servicePort }}
-              {{- else }}
-              serviceName: {{ $fullName }}
-              servicePort: {{ $servicePort }}
-              {{- end }}
-    {{- end }}
-    {{- if $isDelegatedDomain }}
-    - host: {{ $delegatedDomain }}
-    {{- else }}
-    - host: {{ .Values.server_name }}
-    {{- end }}
+    - host: {{ .Values.ingress.host }}
       http:
         paths:
           - path: {{ $ingressPath }}
